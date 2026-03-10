@@ -1,4 +1,18 @@
-import { useState } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TRANZACT Carrier Submission Tool</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+</head>
+<body class="bg-gray-50">
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
 
 const TEAM_MEMBERS = [
   { first: "John", last: "Krahnert", phone: "910-494-0079", email: "john.krahnert@tranzact.net" },
@@ -36,37 +50,38 @@ const emptyRow = () => ({
 });
 
 const Field = ({ label, hint, children }) => (
-  <div className="mb-4">
-    <label className="block text-sm font-semibold text-gray-700 mb-1">
-      {label}{hint && <span className="ml-2 text-xs text-gray-400 font-normal">{hint}</span>}
+  <div style={{marginBottom:"16px"}}>
+    <label style={{display:"block",fontSize:"14px",fontWeight:"600",color:"#374151",marginBottom:"4px"}}>
+      {label}{hint && <span style={{marginLeft:"8px",fontSize:"12px",color:"#9ca3af",fontWeight:"400"}}>{hint}</span>}
     </label>
     {children}
   </div>
 );
-const Input = (props) => <input {...props} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />;
-const Select = ({ children, ...props }) => <select {...props} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white">{children}</select>;
-const Textarea = (props) => <textarea {...props} rows={2} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />;
-const Badge = ({ label, color }) => <span className={`inline-block text-xs px-2 py-0.5 rounded-full font-medium ${color}`}>{label}</span>;
 
-const Section = ({ title, color, bg, children }) => (
-  <div className={`rounded-xl border-2 ${color} mb-6`}>
-    <div className={`px-5 py-3 rounded-t-lg font-bold text-white text-lg ${bg}`}>{title}</div>
-    <div className="p-5">{children}</div>
+const inputStyle = {width:"100%",border:"1px solid #d1d5db",borderRadius:"8px",padding:"8px 12px",fontSize:"14px",outline:"none",boxSizing:"border-box"};
+const Input = (props) => <input {...props} style={inputStyle}/>;
+const Select = ({children,...props}) => <select {...props} style={{...inputStyle,background:"white"}}>{children}</select>;
+const Textarea = (props) => <textarea {...props} rows={2} style={inputStyle}/>;
+
+const Section = ({title,bg,children}) => (
+  <div style={{borderRadius:"12px",border:"2px solid #e5e7eb",marginBottom:"24px"}}>
+    <div style={{padding:"12px 20px",borderRadius:"10px 10px 0 0",fontWeight:"700",color:"white",fontSize:"18px",background:bg}}>{title}</div>
+    <div style={{padding:"20px"}}>{children}</div>
   </div>
 );
 
-const PreviewTable = ({ headers, rows: tableRows, color }) => (
-  <div className="overflow-x-auto rounded-xl border shadow-sm">
-    <table className="text-sm" style={{minWidth: "max-content", width: "100%"}}>
+const PreviewTable = ({headers,rows:tableRows,color}) => (
+  <div style={{overflowX:"auto",borderRadius:"12px",border:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)"}}>
+    <table style={{minWidth:"max-content",width:"100%",fontSize:"14px",borderCollapse:"collapse"}}>
       <thead>
-        <tr className={color}>
-          {headers.map(h => <th key={h} className="px-3 py-2 text-left text-xs font-semibold whitespace-nowrap text-white">{h}</th>)}
+        <tr style={{background:color}}>
+          {headers.map(h => <th key={h} style={{padding:"8px 12px",textAlign:"left",fontSize:"12px",fontWeight:"600",whiteSpace:"nowrap",color:"white"}}>{h}</th>)}
         </tr>
       </thead>
       <tbody>
-        {tableRows.map((cells, i) => (
-          <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-            {cells.map((c, j) => <td key={j} className="px-3 py-2 whitespace-nowrap text-xs max-w-xs" title={String(c)}>{c}</td>)}
+        {tableRows.map((cells,i) => (
+          <tr key={i} style={{background: i%2===0?"white":"#f9fafb"}}>
+            {cells.map((c,j) => <td key={j} style={{padding:"8px 12px",whiteSpace:"nowrap",fontSize:"12px",maxWidth:"200px"}} title={String(c)}>{c}</td>)}
           </tr>
         ))}
       </tbody>
@@ -74,223 +89,218 @@ const PreviewTable = ({ headers, rows: tableRows, color }) => (
   </div>
 );
 
-export default function App() {
+function App() {
   const [tab, setTab] = useState("master");
   const [master, setMaster] = useState({
-    teamMember: "",
-    planYear: "2026",
-    mediaTypeHumana: "",
-    otherMediaTypeHumana: "",
-    mediaTypeUhc: "",
-    otherMediaTypeUhc: "",
-    electionPeriod: "",
-    submissionTypeHumana: "New",
-    submissionTypeWellcare: "New Material",
-    nationalDistribution: "Yes",
-    materialOwner: MATERIAL_OWNER_OPTIONS[0],
-    materialOwnerEntity: "TRANZACT",
-    distributionAreaUhc: "National",
+    teamMember:"",planYear:"2026",mediaTypeHumana:"",otherMediaTypeHumana:"",
+    mediaTypeUhc:"",otherMediaTypeUhc:"",electionPeriod:"",
+    submissionTypeHumana:"New",submissionTypeWellcare:"New Material",
+    nationalDistribution:"Yes",materialOwner:MATERIAL_OWNER_OPTIONS[0],
+    materialOwnerEntity:"TRANZACT",distributionAreaUhc:"National",
   });
   const [rows, setRows] = useState([emptyRow()]);
 
-  const setM = (k, v) => setMaster(p => ({ ...p, [k]: v }));
-  const setRow = (i, k, v) => setRows(p => p.map((r, idx) => idx === i ? { ...r, [k]: v } : r));
-  const addRow = () => setRows(p => [...p, emptyRow()]);
-  const removeRow = (i) => setRows(p => p.filter((_, idx) => idx !== i));
+  const setM = (k,v) => setMaster(p=>({...p,[k]:v}));
+  const setRow = (i,k,v) => setRows(p=>p.map((r,idx)=>idx===i?{...r,[k]:v}:r));
+  const addRow = () => setRows(p=>[...p,emptyRow()]);
+  const removeRow = (i) => setRows(p=>p.filter((_,idx)=>idx!==i));
 
-  const selectedMember = TEAM_MEMBERS.find(m => `${m.first} ${m.last}` === master.teamMember);
-  const isWebsite = master.mediaTypeUhc === "Website" || master.mediaTypeUhc === "Website Landing Page";
-  const uhcElection = uhcElectionMap[master.electionPeriod] || "";
-  const wellcareElection = wellcareElectionMap[master.electionPeriod] || "";
-  const wellcareMedia = master.mediaTypeHumana === "Other" ? master.otherMediaTypeHumana : master.mediaTypeHumana;
+  const selectedMember = TEAM_MEMBERS.find(m=>`${m.first} ${m.last}`===master.teamMember);
+  const isWebsite = master.mediaTypeUhc==="Website"||master.mediaTypeUhc==="Website Landing Page";
+  const uhcElection = uhcElectionMap[master.electionPeriod]||"";
+  const wellcareElection = wellcareElectionMap[master.electionPeriod]||"";
+  const wellcareMedia = master.mediaTypeHumana==="Other"?master.otherMediaTypeHumana:master.mediaTypeHumana;
 
   const tabs = [
-    { id: "master", label: "📋 Master Input" },
-    { id: "humana", label: "🟢 Humana" },
-    { id: "uhc", label: "🔵 UnitedHealthcare" },
-    { id: "uhc-website", label: "🔵 UHC Website Tab", show: isWebsite },
-    { id: "wellcare", label: "🩵 Wellcare" },
-  ].filter(t => t.show !== false);
+    {id:"master",label:"📋 Master Input"},
+    {id:"humana",label:"🟢 Humana"},
+    {id:"uhc",label:"🔵 UnitedHealthcare"},
+    {id:"uhc-website",label:"🔵 UHC Website Tab",show:isWebsite},
+    {id:"wellcare",label:"🩵 Wellcare"},
+  ].filter(t=>t.show!==false);
+
+  const tabActive = {borderBottom:"2px solid #3b82f6",color:"#2563eb",background:"#eff6ff",padding:"8px 16px",fontSize:"14px",fontWeight:"500",borderRadius:"8px 8px 0 0",cursor:"pointer",whiteSpace:"nowrap"};
+  const tabInactive = {borderBottom:"2px solid transparent",color:"#6b7280",padding:"8px 16px",fontSize:"14px",fontWeight:"500",borderRadius:"8px 8px 0 0",cursor:"pointer",whiteSpace:"nowrap"};
+  const grid2 = {display:"grid",gridTemplateColumns:"1fr 1fr",gap:"16px"};
+  const grid3 = {display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"8px"};
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b shadow-sm px-6 py-4 flex items-center justify-between">
+    <div style={{minHeight:"100vh",background:"#f9fafb"}}>
+      {/* Header */}
+      <div style={{background:"white",borderBottom:"1px solid #e5e7eb",boxShadow:"0 1px 3px rgba(0,0,0,0.1)",padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">TRANZACT Carrier Submission Tool</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Humana · UnitedHealthcare · Wellcare</p>
+          <h1 style={{fontSize:"24px",fontWeight:"700",color:"#1f2937",margin:0}}>TRANZACT Carrier Submission Tool</h1>
+          <p style={{fontSize:"14px",color:"#6b7280",margin:"4px 0 0"}}>Humana · UnitedHealthcare · Wellcare</p>
         </div>
-        <div className="flex gap-2">
-          <Badge label="Auto-fill Active" color="bg-green-100 text-green-700" />
-          <Badge label={`${rows.length} Material${rows.length > 1 ? "s" : ""}`} color="bg-blue-100 text-blue-700" />
+        <div style={{display:"flex",gap:"8px"}}>
+          <span style={{fontSize:"12px",padding:"2px 8px",borderRadius:"9999px",background:"#dcfce7",color:"#15803d",fontWeight:"500"}}>Auto-fill Active</span>
+          <span style={{fontSize:"12px",padding:"2px 8px",borderRadius:"9999px",background:"#dbeafe",color:"#1d4ed8",fontWeight:"500"}}>{rows.length} Material{rows.length>1?"s":""}</span>
         </div>
       </div>
 
-      <div className="flex gap-1 px-6 pt-4 border-b bg-white overflow-x-auto">
-        {tabs.map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)}
-            className={`px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-all whitespace-nowrap ${tab === t.id ? "border-blue-500 text-blue-600 bg-blue-50" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
-            {t.label}
-          </button>
+      {/* Tabs */}
+      <div style={{display:"flex",gap:"4px",padding:"16px 24px 0",borderBottom:"1px solid #e5e7eb",background:"white",overflowX:"auto"}}>
+        {tabs.map(t=>(
+          <button key={t.id} onClick={()=>setTab(t.id)} style={tab===t.id?tabActive:tabInactive}>{t.label}</button>
         ))}
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-6">
+      <div style={{maxWidth:"1100px",margin:"0 auto",padding:"24px"}}>
 
-        {tab === "master" && (
+        {tab==="master" && (
           <div>
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-sm text-blue-800">
+            <div style={{background:"#eff6ff",border:"1px solid #bfdbfe",borderRadius:"12px",padding:"16px",marginBottom:"24px",fontSize:"14px",color:"#1e40af"}}>
               <strong>How to use:</strong> Fill out this master form once per submission batch. All shared fields auto-populate across Humana, UHC, and Wellcare tabs. Then add individual material rows below.
             </div>
 
-            <Section title="👤 Submitting Team Member" color="border-gray-300" bg="bg-gray-600">
+            <Section title="👤 Submitting Team Member" bg="#4b5563">
               <Field label="Select Team Member">
-                <Select value={master.teamMember} onChange={e => setM("teamMember", e.target.value)}>
+                <Select value={master.teamMember} onChange={e=>setM("teamMember",e.target.value)}>
                   <option value="">-- Select team member --</option>
-                  {TEAM_MEMBERS.map(m => <option key={m.email}>{m.first} {m.last}</option>)}
+                  {TEAM_MEMBERS.map(m=><option key={m.email}>{m.first} {m.last}</option>)}
                 </Select>
               </Field>
               {selectedMember && (
-                <div className="grid grid-cols-3 gap-3 mt-2 bg-white border rounded-lg p-3 text-sm">
-                  <div><span className="text-gray-500">Name:</span> <strong>{selectedMember.first} {selectedMember.last}</strong></div>
-                  <div><span className="text-gray-500">Phone:</span> {selectedMember.phone}</div>
-                  <div><span className="text-gray-500">Email:</span> {selectedMember.email}</div>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"12px",background:"white",border:"1px solid #e5e7eb",borderRadius:"8px",padding:"12px",fontSize:"14px"}}>
+                  <div><span style={{color:"#6b7280"}}>Name: </span><strong>{selectedMember.first} {selectedMember.last}</strong></div>
+                  <div><span style={{color:"#6b7280"}}>Phone: </span>{selectedMember.phone}</div>
+                  <div><span style={{color:"#6b7280"}}>Email: </span>{selectedMember.email}</div>
                 </div>
               )}
             </Section>
 
-            <Section title="📦 Batch-Level Fields (Apply to All Rows)" color="border-blue-400" bg="bg-blue-600">
-              <div className="grid grid-cols-2 gap-4">
+            <Section title="📦 Batch-Level Fields (Apply to All Rows)" bg="#1d4ed8">
+              <div style={grid2}>
                 <Field label="Material Owner Entity Name (UHC)">
-                  <Input value={master.materialOwnerEntity} onChange={e => setM("materialOwnerEntity", e.target.value)} placeholder="e.g. TRANZACT" />
+                  <Input value={master.materialOwnerEntity} onChange={e=>setM("materialOwnerEntity",e.target.value)} placeholder="e.g. TRANZACT"/>
                 </Field>
                 <Field label="Relationship to Material Owner (UHC)">
-                  <Select value={master.materialOwner} onChange={e => setM("materialOwner", e.target.value)}>
-                    {MATERIAL_OWNER_OPTIONS.map(o => <option key={o}>{o}</option>)}
+                  <Select value={master.materialOwner} onChange={e=>setM("materialOwner",e.target.value)}>
+                    {MATERIAL_OWNER_OPTIONS.map(o=><option key={o}>{o}</option>)}
                   </Select>
                 </Field>
                 <Field label="Plan Year">
-                  <Select value={master.planYear} onChange={e => setM("planYear", e.target.value)}>
-                    {PLAN_YEARS.map(y => <option key={y}>{y}</option>)}
+                  <Select value={master.planYear} onChange={e=>setM("planYear",e.target.value)}>
+                    {PLAN_YEARS.map(y=><option key={y}>{y}</option>)}
                   </Select>
                 </Field>
                 <Field label="Election Period / Time Period">
-                  <Select value={master.electionPeriod} onChange={e => setM("electionPeriod", e.target.value)}>
+                  <Select value={master.electionPeriod} onChange={e=>setM("electionPeriod",e.target.value)}>
                     <option value="">-- Select period --</option>
-                    {ELECTION_PERIODS_HUMANA.map(p => <option key={p}>{p}</option>)}
+                    {ELECTION_PERIODS_HUMANA.map(p=><option key={p}>{p}</option>)}
                   </Select>
                 </Field>
                 <Field label="Submission Type (Humana)">
-                  <Select value={master.submissionTypeHumana} onChange={e => setM("submissionTypeHumana", e.target.value)}>
-                    {SUBMISSION_TYPES_HUMANA.map(s => <option key={s}>{s}</option>)}
+                  <Select value={master.submissionTypeHumana} onChange={e=>setM("submissionTypeHumana",e.target.value)}>
+                    {SUBMISSION_TYPES_HUMANA.map(s=><option key={s}>{s}</option>)}
                   </Select>
                 </Field>
                 <Field label="Submission Type (Wellcare)">
-                  <Select value={master.submissionTypeWellcare} onChange={e => setM("submissionTypeWellcare", e.target.value)}>
-                    {SUBMISSION_TYPES_WELLCARE.map(s => <option key={s}>{s}</option>)}
+                  <Select value={master.submissionTypeWellcare} onChange={e=>setM("submissionTypeWellcare",e.target.value)}>
+                    {SUBMISSION_TYPES_WELLCARE.map(s=><option key={s}>{s}</option>)}
                   </Select>
                 </Field>
                 <Field label="🟢 Humana — Media Type">
-                  <Select value={master.mediaTypeHumana} onChange={e => setM("mediaTypeHumana", e.target.value)}>
+                  <Select value={master.mediaTypeHumana} onChange={e=>setM("mediaTypeHumana",e.target.value)}>
                     <option value="">-- Select Humana type --</option>
-                    {MEDIA_TYPES_HUMANA.map(t => <option key={t}>{t}</option>)}
+                    {MEDIA_TYPES_HUMANA.map(t=><option key={t}>{t}</option>)}
                   </Select>
                 </Field>
                 <Field label="🔵 UHC — Media Type">
-                  <Select value={master.mediaTypeUhc} onChange={e => setM("mediaTypeUhc", e.target.value)}>
+                  <Select value={master.mediaTypeUhc} onChange={e=>setM("mediaTypeUhc",e.target.value)}>
                     <option value="">-- Select UHC type --</option>
-                    {MEDIA_TYPES_UHC.map(t => <option key={t}>{t}</option>)}
+                    {MEDIA_TYPES_UHC.map(t=><option key={t}>{t}</option>)}
                   </Select>
                 </Field>
-                {master.mediaTypeHumana === "Other" && (
+                {master.mediaTypeHumana==="Other" && (
                   <Field label='🟢 Humana — "Other" Description'>
-                    <Input value={master.otherMediaTypeHumana} onChange={e => setM("otherMediaTypeHumana", e.target.value)} placeholder="Describe Humana material type..." />
+                    <Input value={master.otherMediaTypeHumana} onChange={e=>setM("otherMediaTypeHumana",e.target.value)} placeholder="Describe Humana material type..."/>
                   </Field>
                 )}
-                {(master.mediaTypeUhc === "Other (Digital Ad/Search Ad)" || master.mediaTypeUhc === "Other (Specify)") && (
+                {(master.mediaTypeUhc==="Other (Digital Ad/Search Ad)"||master.mediaTypeUhc==="Other (Specify)") && (
                   <Field label='🔵 UHC — "Other" Description'>
-                    <Input value={master.otherMediaTypeUhc} onChange={e => setM("otherMediaTypeUhc", e.target.value)} placeholder="Describe UHC material type..." />
+                    <Input value={master.otherMediaTypeUhc} onChange={e=>setM("otherMediaTypeUhc",e.target.value)} placeholder="Describe UHC material type..."/>
                   </Field>
                 )}
                 <Field label="National Distribution">
-                  <Select value={master.nationalDistribution} onChange={e => setM("nationalDistribution", e.target.value)}>
+                  <Select value={master.nationalDistribution} onChange={e=>setM("nationalDistribution",e.target.value)}>
                     <option>Yes</option><option>No</option>
                   </Select>
                 </Field>
                 <Field label="Distribution Area (UHC)">
-                  <Select value={master.distributionAreaUhc} onChange={e => setM("distributionAreaUhc", e.target.value)}>
-                    {DISTRIBUTION_AREA_UHC.map(d => <option key={d}>{d}</option>)}
+                  <Select value={master.distributionAreaUhc} onChange={e=>setM("distributionAreaUhc",e.target.value)}>
+                    {DISTRIBUTION_AREA_UHC.map(d=><option key={d}>{d}</option>)}
                   </Select>
                 </Field>
               </div>
-
-              <div className="mt-4 bg-gray-50 border rounded-lg p-3 text-xs text-gray-500 grid grid-cols-3 gap-2">
-                <div>🟢 <strong>Humana Media:</strong> {master.mediaTypeHumana || "—"}</div>
-                <div>🔵 <strong>UHC Media:</strong> {master.mediaTypeUhc || "—"}</div>
-                <div>🩵 <strong>Wellcare Media:</strong> {wellcareMedia || "— (auto from Humana)"}</div>
-                <div>🟢 <strong>Humana Election:</strong> {master.electionPeriod || "—"}</div>
-                <div>🔵 <strong>UHC Election:</strong> {uhcElection || "—"}</div>
-                <div>🩵 <strong>Wellcare Season:</strong> {wellcareElection || "—"}</div>
+              <div style={{marginTop:"16px",background:"#f9fafb",border:"1px solid #e5e7eb",borderRadius:"8px",padding:"12px",fontSize:"12px",color:"#6b7280",...grid3}}>
+                <div>🟢 <strong>Humana Media:</strong> {master.mediaTypeHumana||"—"}</div>
+                <div>🔵 <strong>UHC Media:</strong> {master.mediaTypeUhc||"—"}</div>
+                <div>🩵 <strong>Wellcare Media:</strong> {wellcareMedia||"— (auto from Humana)"}</div>
+                <div>🟢 <strong>Humana Election:</strong> {master.electionPeriod||"—"}</div>
+                <div>🔵 <strong>UHC Election:</strong> {uhcElection||"—"}</div>
+                <div>🩵 <strong>Wellcare Season:</strong> {wellcareElection||"—"}</div>
               </div>
             </Section>
 
-            <Section title="📄 Individual Material Rows" color="border-gray-400" bg="bg-gray-500">
-              <p className="text-sm text-gray-500 mb-4">Each row = one material/piece. Batch-level fields above apply to all rows automatically.</p>
-              {rows.map((row, i) => (
-                <div key={row.id} className="border border-gray-200 rounded-xl p-4 mb-4 bg-white">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="font-semibold text-gray-700">Material #{i + 1}</span>
-                    {rows.length > 1 && <button onClick={() => removeRow(i)} className="text-red-500 text-xs hover:underline">Remove</button>}
+            <Section title="📄 Individual Material Rows" bg="#6b7280">
+              <p style={{fontSize:"14px",color:"#6b7280",marginBottom:"16px"}}>Each row = one material/piece. Batch-level fields above apply to all rows automatically.</p>
+              {rows.map((row,i)=>(
+                <div key={row.id} style={{border:"1px solid #e5e7eb",borderRadius:"12px",padding:"16px",marginBottom:"16px",background:"white"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"12px"}}>
+                    <span style={{fontWeight:"600",color:"#374151"}}>Material #{i+1}</span>
+                    {rows.length>1 && <button onClick={()=>removeRow(i)} style={{color:"#ef4444",fontSize:"12px",background:"none",border:"none",cursor:"pointer"}}>Remove</button>}
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div style={grid2}>
                     <Field label="SMID" hint="(used across all 3 carriers)">
-                      <Input value={row.smid} onChange={e => setRow(i, "smid", e.target.value)} placeholder="e.g. H1234_25_SMID" />
+                      <Input value={row.smid} onChange={e=>setRow(i,"smid",e.target.value)} placeholder="e.g. H1234_25_SMID"/>
                     </Field>
                     <Field label="Original SMID" hint="(if revised)">
-                      <Input value={row.originalSmid} onChange={e => setRow(i, "originalSmid", e.target.value)} placeholder="Original SMID..." />
+                      <Input value={row.originalSmid} onChange={e=>setRow(i,"originalSmid",e.target.value)} placeholder="Original SMID..."/>
                     </Field>
                     <Field label="Name of Material Creator">
-                      <Input value={row.nameOfCreator} onChange={e => setRow(i, "nameOfCreator", e.target.value)} placeholder="Creator name..." />
+                      <Input value={row.nameOfCreator} onChange={e=>setRow(i,"nameOfCreator",e.target.value)} placeholder="Creator name..."/>
                     </Field>
                     <Field label="Page Count">
-                      <Input type="number" value={row.pageCount} onChange={e => setRow(i, "pageCount", e.target.value)} placeholder="# of pages" />
+                      <Input type="number" value={row.pageCount} onChange={e=>setRow(i,"pageCount",e.target.value)} placeholder="# of pages"/>
                     </Field>
-                    {(master.mediaTypeUhc === "Website" || master.mediaTypeUhc === "Website Landing Page" || master.mediaTypeHumana === "Other" || master.mediaTypeUhc === "Other (Specify)") && (
+                    {(master.mediaTypeUhc==="Website"||master.mediaTypeUhc==="Website Landing Page"||master.mediaTypeHumana==="Other"||master.mediaTypeUhc==="Other (Specify)") && (
                       <Field label="URL" hint="(if applicable)">
-                        <Input value={row.url} onChange={e => setRow(i, "url", e.target.value)} placeholder="https://..." />
+                        <Input value={row.url} onChange={e=>setRow(i,"url",e.target.value)} placeholder="https://..."/>
                       </Field>
                     )}
-                    {master.distributionAreaUhc !== "National" && (
+                    {master.distributionAreaUhc!=="National" && (
                       <Field label="Distribution Area Specifics (UHC)">
-                        <Input value={row.uhcDistributionSpecifics} onChange={e => setRow(i, "uhcDistributionSpecifics", e.target.value)} placeholder="States, Counties, Cities, ZIP Codes..." />
+                        <Input value={row.uhcDistributionSpecifics} onChange={e=>setRow(i,"uhcDistributionSpecifics",e.target.value)} placeholder="States, Counties, Cities, ZIP Codes..."/>
                       </Field>
                     )}
                     <Field label="Additional Notes (Humana / Wellcare)">
-                      <Textarea value={row.additionalNotes} onChange={e => setRow(i, "additionalNotes", e.target.value)} placeholder="Notes..." />
+                      <Textarea value={row.additionalNotes} onChange={e=>setRow(i,"additionalNotes",e.target.value)} placeholder="Notes..."/>
                     </Field>
                     <Field label="Submission Notes (UHC)">
-                      <Textarea value={row.uhcSubmissionNotes} onChange={e => setRow(i, "uhcSubmissionNotes", e.target.value)} placeholder="UHC-specific notes..." />
+                      <Textarea value={row.uhcSubmissionNotes} onChange={e=>setRow(i,"uhcSubmissionNotes",e.target.value)} placeholder="UHC-specific notes..."/>
                     </Field>
                   </div>
                   {isWebsite && (
-                    <div className="mt-3 border-t pt-3">
-                      <p className="text-xs font-semibold text-blue-700 mb-2">🔵 UHC Website Tab Fields</p>
-                      <div className="grid grid-cols-2 gap-3">
+                    <div style={{marginTop:"12px",borderTop:"1px solid #e5e7eb",paddingTop:"12px"}}>
+                      <p style={{fontSize:"12px",fontWeight:"600",color:"#1d4ed8",marginBottom:"8px"}}>🔵 UHC Website Tab Fields</p>
+                      <div style={grid2}>
                         <Field label="Website or Landing Page">
-                          <Select value={row.websiteOrLanding} onChange={e => setRow(i, "websiteOrLanding", e.target.value)}>
+                          <Select value={row.websiteOrLanding} onChange={e=>setRow(i,"websiteOrLanding",e.target.value)}>
                             <option>Website</option><option>Website Landing Page</option>
                           </Select>
                         </Field>
                         <Field label="Website URL">
-                          <Input value={row.websiteUrl} onChange={e => setRow(i, "websiteUrl", e.target.value)} placeholder="https://..." />
+                          <Input value={row.websiteUrl} onChange={e=>setRow(i,"websiteUrl",e.target.value)} placeholder="https://..."/>
                         </Field>
                         <Field label="Will URL feature UHC logo?">
-                          <Select value={row.uhcLogo} onChange={e => setRow(i, "uhcLogo", e.target.value)}>
+                          <Select value={row.uhcLogo} onChange={e=>setRow(i,"uhcLogo",e.target.value)}>
                             <option>No</option><option>Yes</option>
                           </Select>
                         </Field>
-                        {row.uhcLogo === "Yes" && (
+                        {row.uhcLogo==="Yes" && (
                           <Field label="Have you registered the URL?">
-                            <Select value={row.urlRegistered} onChange={e => setRow(i, "urlRegistered", e.target.value)}>
+                            <Select value={row.urlRegistered} onChange={e=>setRow(i,"urlRegistered",e.target.value)}>
                               <option>No</option><option>Yes</option>
                             </Select>
                           </Field>
@@ -300,98 +310,98 @@ export default function App() {
                   )}
                 </div>
               ))}
-              <button onClick={addRow} className="w-full border-2 border-dashed border-blue-300 text-blue-500 rounded-xl py-3 text-sm font-medium hover:bg-blue-50 transition">
+              <button onClick={addRow} style={{width:"100%",border:"2px dashed #93c5fd",color:"#3b82f6",borderRadius:"12px",padding:"12px",fontSize:"14px",fontWeight:"500",background:"none",cursor:"pointer"}}>
                 + Add Another Material
               </button>
             </Section>
           </div>
         )}
 
-        {tab === "humana" && (
+        {tab==="humana" && (
           <div>
-            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4 text-sm text-green-800">
-              <strong>Humana Submission Preview</strong> — Scroll horizontally to see all columns. Fields auto-populated from master input.
+            <div style={{background:"#f0fdf4",border:"1px solid #bbf7d0",borderRadius:"12px",padding:"16px",marginBottom:"16px",fontSize:"14px",color:"#166534"}}>
+              <strong>Humana Submission Preview</strong> — Scroll horizontally to see all columns.
             </div>
             <PreviewTable
-              color="bg-green-600"
+              color="#16a34a"
               headers={["TPMO Name","Downline","SMID","Orig. SMID","New/Resubmission","Creator","Media Type","Other","Pages","Plan Year","Time Period","National Dist.","URL","Notes","Multi-Plan?","Plan Type","Provider Ref","Co-Branded"]}
-              rows={rows.map(row => [
-                "TRANZACT", "", row.smid, row.originalSmid,
-                master.submissionTypeHumana, row.nameOfCreator,
+              rows={rows.map(row=>[
+                "TRANZACT","",row.smid,row.originalSmid,
+                master.submissionTypeHumana,row.nameOfCreator,
                 master.mediaTypeHumana,
-                master.mediaTypeHumana === "Other" ? master.otherMediaTypeHumana : "",
-                row.pageCount, master.planYear, master.electionPeriod,
-                master.nationalDistribution, row.url, row.additionalNotes,
-                "Multi-Plan", "Medicare Advantage (MA/MAPD)", "No", "No"
+                master.mediaTypeHumana==="Other"?master.otherMediaTypeHumana:"",
+                row.pageCount,master.planYear,master.electionPeriod,
+                master.nationalDistribution,row.url,row.additionalNotes,
+                "Multi-Plan","Medicare Advantage (MA/MAPD)","No","No"
               ])}
             />
           </div>
         )}
 
-        {tab === "uhc" && (
+        {tab==="uhc" && (
           <div>
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4 text-sm text-blue-800">
+            <div style={{background:"#eff6ff",border:"1px solid #bfdbfe",borderRadius:"12px",padding:"16px",marginBottom:"16px",fontSize:"14px",color:"#1e40af"}}>
               <strong>UnitedHealthcare Submission Preview</strong> — Scroll horizontally to see all columns.
             </div>
             <PreviewTable
-              color="bg-blue-600"
+              color="#2563eb"
               headers={["Entity Name","First","Last","Phone","Email","Material Owner Entity","Relationship to Owner","Material SMID","HPMS SMID","Media Type","Other Desc","Pages","Plan Year","Election Period","Dist. Area","Dist. Specifics","Notes"]}
-              rows={rows.map(row => [
+              rows={rows.map(row=>[
                 "TRANZACT",
-                selectedMember?.first || "—", selectedMember?.last || "—",
-                selectedMember?.phone || "—", selectedMember?.email || "—",
-                master.materialOwnerEntity, master.materialOwner,
-                row.smid, row.smid,
+                selectedMember?.first||"—",selectedMember?.last||"—",
+                selectedMember?.phone||"—",selectedMember?.email||"—",
+                master.materialOwnerEntity,master.materialOwner,
+                row.smid,row.smid,
                 master.mediaTypeUhc,
-                (master.mediaTypeUhc === "Other (Digital Ad/Search Ad)" || master.mediaTypeUhc === "Other (Specify)") ? master.otherMediaTypeUhc : "",
-                row.pageCount, master.planYear, uhcElection,
+                (master.mediaTypeUhc==="Other (Digital Ad/Search Ad)"||master.mediaTypeUhc==="Other (Specify)")?master.otherMediaTypeUhc:"",
+                row.pageCount,master.planYear,uhcElection,
                 master.distributionAreaUhc,
-                master.distributionAreaUhc !== "National" ? row.uhcDistributionSpecifics : "",
+                master.distributionAreaUhc!=="National"?row.uhcDistributionSpecifics:"",
                 row.uhcSubmissionNotes
               ])}
             />
           </div>
         )}
 
-        {tab === "uhc-website" && isWebsite && (
+        {tab==="uhc-website" && isWebsite && (
           <div>
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4 text-sm text-blue-800">
-              <strong>UHC Website / Landing Page Tab Preview</strong> — Shown because UHC Media Type is Website or Website Landing Page.
+            <div style={{background:"#eff6ff",border:"1px solid #bfdbfe",borderRadius:"12px",padding:"16px",marginBottom:"16px",fontSize:"14px",color:"#1e40af"}}>
+              <strong>UHC Website / Landing Page Tab Preview</strong>
             </div>
             <PreviewTable
-              color="bg-blue-700"
+              color="#1d4ed8"
               headers={["Entity Name","First","Last","Phone","Email","Material Owner Entity","Relationship to Owner","Material SMID","HPMS SMID","Type","Pages","URL","UHC Logo?","URL Registered?","Plan Year","Election Period","Dist. Area","Dist. Specifics"]}
-              rows={rows.map(row => [
+              rows={rows.map(row=>[
                 "TRANZACT",
-                selectedMember?.first || "—", selectedMember?.last || "—",
-                selectedMember?.phone || "—", selectedMember?.email || "—",
-                master.materialOwnerEntity, master.materialOwner,
-                row.smid, row.smid,
-                row.websiteOrLanding, row.pageCount, row.websiteUrl,
-                row.uhcLogo, row.uhcLogo === "Yes" ? row.urlRegistered : "N/A",
-                master.planYear, uhcElection,
+                selectedMember?.first||"—",selectedMember?.last||"—",
+                selectedMember?.phone||"—",selectedMember?.email||"—",
+                master.materialOwnerEntity,master.materialOwner,
+                row.smid,row.smid,
+                row.websiteOrLanding,row.pageCount,row.websiteUrl,
+                row.uhcLogo,row.uhcLogo==="Yes"?row.urlRegistered:"N/A",
+                master.planYear,uhcElection,
                 master.distributionAreaUhc,
-                master.distributionAreaUhc !== "National" ? row.uhcDistributionSpecifics : ""
+                master.distributionAreaUhc!=="National"?row.uhcDistributionSpecifics:""
               ])}
             />
           </div>
         )}
 
-        {tab === "wellcare" && (
+        {tab==="wellcare" && (
           <div>
-            <div className="bg-teal-50 border border-teal-200 rounded-xl p-4 mb-4 text-sm text-teal-800">
-              <strong>Wellcare Submission Preview</strong> — Media type auto-filled from Humana selection. Review Confirmation column left blank per carrier form requirements.
+            <div style={{background:"#f0fdfa",border:"1px solid #99f6e4",borderRadius:"12px",padding:"16px",marginBottom:"16px",fontSize:"14px",color:"#0f766e"}}>
+              <strong>Wellcare Submission Preview</strong> — Media type auto-filled from Humana selection.
             </div>
             <PreviewTable
-              color="bg-teal-600"
+              color="#0d9488"
               headers={["Existing SMID","New SMID","TPMO Name","Distribution Time Period","Selling Season","Media Type","Submission Type","National Dist.","Review Confirmation","Additional Notes"]}
-              rows={rows.map(row => [
-                row.originalSmid, row.smid, "TRANZACT",
+              rows={rows.map(row=>[
+                row.originalSmid,row.smid,"TRANZACT",
                 `Plan Year ${master.planYear}`,
-                wellcareElection, wellcareMedia,
+                wellcareElection,wellcareMedia,
                 master.submissionTypeWellcare,
-                master.nationalDistribution === "Yes" ? "Y" : "N",
-                "", row.additionalNotes
+                master.nationalDistribution==="Yes"?"Y":"N",
+                "",row.additionalNotes
               ])}
             />
           </div>
@@ -401,3 +411,8 @@ export default function App() {
     </div>
   );
 }
+
+ReactDOM.render(<App/>, document.getElementById("root"));
+</script>
+</body>
+</html>
